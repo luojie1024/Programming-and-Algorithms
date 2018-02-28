@@ -13,8 +13,8 @@ using namespace std;
 
 
 
-enum Month{Jan=1,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec};
-enum Week{Sun,Mon,Tue,Wed,Thu,Fri,Sat};
+string months[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+string weeks[]={"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 
 class Crontab
 {
@@ -69,12 +69,37 @@ bool isnumber(char c)
 		return false;
 }
 
-char * convnumber(string s)
+int convnumber(string s)
 {
+	for(int i=0;i<12;i++)
+	{
+		if(s.compare(months[i])==0)
+		{
+			return i+1;
+		}
+	}
+	
+	for(int j=0;j<7;j++)
+	{
+		if(s.compare(weeks[j])==0)
+		{
+			return j;
+		}
+	}
+	 
 	return 0;
 }
 
-
+int strtoint(string s)
+{
+    int result=0,j=0;
+    for(int i=s.length();i>0;i--)
+    {
+        result=(s[i-1]-'0')*pow(10,j)+result;
+        j++;
+    }
+    return result;
+}
 
 //输入处理
 void input(string s,int arr[])
@@ -92,42 +117,61 @@ void input(string s,int arr[])
         for(vector<string>::iterator it=v1.begin();it!=v1.end();it++)
         {
         	const char *cstr;
-        	if(it->length()>3||!isnumber(it->c_str()[0]))
-        	{
-        		cstr=convnumber(*it);
-			}else{
-				//获得字符数组
-            	cstr=it->c_str();
-			}
+			//获得字符数组
+        	cstr=it->c_str();
             
             //是否是范围值
             if(it->find("-")!=string::npos)
             {
-                for(int k=cstr[0]-'0';k<=cstr[2]-'0';k++)
+            	int start,end;
+        		vector<string> v2;
+        		//逗号分割
+        		v2=split(*it,'-');
+        		if(v2[0].length()==3)
+        		{
+        			start=convnumber(v2[0]);
+				}else{
+					start=cstr[0]-'0';
+				}
+				if(v2[1].length()==3)
+        		{
+        			start=convnumber(v2[1]);
+				}else{
+					end=cstr[2]-'0';
+				}
+				
+				//范围赋值 
+                for(int k=start;k<=end;k++)
                 {
                     arr[k]=1;
                 }
             }else{
-                arr[cstr[0]-'0']=1;
+            	int postion=0;
+            	if(it->length()==3)
+            	{
+            		postion=convnumber(*it);
+				}
+				else{
+					postion=strtoint(*it);					
+				}
+				arr[postion]=1;
             }
         }
-    }
+    }else{//单个出现
+		if(s.length()==3)
+		{
+			arr[convnumber(s)]=1;
+		}else{
+			arr[strtoint(s)]=1;	
+		}
+	}
 }
 
 
 
 
 
-int strtoint(string s)
-{
-    int result=0,j=0;
-    for(int i=s.length();i>0;i--)
-    {
-        result=(s[i-1]-'0')*pow(10,j)+result;
-        j++;
-    }
-    return result;
-}
+
 
 //排序规则
 bool compare(Crontab a,Crontab b)
@@ -151,10 +195,7 @@ int main(int argc, char** argv) {
 
     string str;
     Time start_time,end_time;
-    /*
-    for(int i=0;i<60;i++)
-        cout<<temp_crontab.minutes[i];
-    */
+   
 
     cin>>n;
     //输入时间
@@ -187,6 +228,13 @@ int main(int argc, char** argv) {
         cin>>str;
         input(str,temp_crontab.day_of_week);
         cin>>temp_crontab.command;
+        /*for(int i=0;i<8;i++)
+        {
+        	//cout<<temp_crontab.minutes[i];
+        	cout<<temp_crontab.day_of_week[i];
+        	//cout<<temp_crontab.hours[i];
+		}*/
+        	
         vec_crontab.push_back(temp_crontab);
     }
 
@@ -209,8 +257,7 @@ int main(int argc, char** argv) {
                             if((it->month[month]==1||it->month[0]==-2)&&
                                (it->day_of_month[day]==1||it->day_of_month[0]==-2)&&
                                (it->hours[hours]==1||it->hours[0]==-2)&&
-                               (it->minutes[min]==1||it->minutes[0]==-2)
-                                    )
+                               (it->minutes[min]==1||it->minutes[0]==-2))
                             {
                                 cout<<year<<month<<day<<hours<<min<<' '<<it->command<<endl;
                             }
