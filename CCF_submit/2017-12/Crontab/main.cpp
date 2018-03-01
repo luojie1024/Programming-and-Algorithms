@@ -12,6 +12,8 @@
 using namespace std;
 
 
+int leap_year[13]={0,31,29,31,30,31,30,31,31,30,31,30,31};
+int normal_year[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};
 
 string months[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 string weeks[]={"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
@@ -37,6 +39,56 @@ public:
     int year;
 };
 
+
+bool isLeapYear(int year)
+{
+	if((year%4==0&&year%100!=0)||(year%400==0))
+		return true;
+	else
+		return false;
+}
+
+int computWeek(Time time)
+{
+	int sumday=0;
+	int * arr_month;
+	//如果是1970年 
+	if(time.year==1970)
+	{
+    	if(isLeapYear(1970)) 
+			arr_month=leap_year;
+		else 
+			arr_month=normal_year;
+		for(int month=1;month<time.month;month++)
+			sumday+=arr_month[month];
+	}else
+	{
+		//先处理整年 
+		for(int year=1970;year<time.year;year++)
+		{
+			//闰年处理 
+	    	if(isLeapYear(year)) 
+				sumday+=366;
+			else
+				sumday+=365;
+		}
+		
+    	if(isLeapYear(time.year)) 
+			arr_month=leap_year;
+		else 
+			arr_month=normal_year;
+			
+		for(int month=1;month<time.month;month++)
+			sumday+=arr_month[month];
+		
+	}
+	
+	//加上剩下的天数 
+	sumday+=time.day_of_month-1;
+	//	
+	sumday+=4;
+	return sumday%7; 	
+}
 
 //字符串分割
 vector<string> split(const string &s,const char &split)
@@ -241,32 +293,79 @@ int main(int argc, char** argv) {
     //排序
     sort(vec_crontab.begin(),vec_crontab.end(),compare);
 
+	//计算开始时间是星期几
+	int startweek;
+	startweek=computWeek(start_time);
+	//cout<<startweek<<endl;
+	//结束标志 
+	int end_flag=0;
     //输出
     for(int year=start_time.year;year<=end_time.year;year++)
     {
-        for(int month=start_time.month;month<=end_time.month;month++)
-        {
-            for(int day=start_time.day_of_month;day<=end_time.day_of_month;day++)
+    	int * arr_month;
+    	if(isLeapYear(year)) 
+			arr_month=leap_year;
+		else 
+			arr_month=normal_year;
+		
+			
+        for(int month=start_time.month;month<=13;month++)
+        {		
+            for(int day=start_time.day_of_month;day<=arr_month[month];day++)
             {
-                for(int hours=start_time.hours;hours<=end_time.hours;hours++)
+                for(int hours=start_time.hours;hours<=25;hours++)
                 {
-                    for(int min=start_time.minutes;min<=end_time.minutes;min++)
+                    for(int min=start_time.minutes;min<=60;min++)
                     {
                         for(vector<Crontab>::iterator it=vec_crontab.begin();it!=vec_crontab.end();it++)
                         {
                             if((it->month[month]==1||it->month[0]==-2)&&
                                (it->day_of_month[day]==1||it->day_of_month[0]==-2)&&
                                (it->hours[hours]==1||it->hours[0]==-2)&&
-                               (it->minutes[min]==1||it->minutes[0]==-2))
+                               (it->minutes[min]==1||it->minutes[0]==-2)&&(it->day_of_week[startweek]==1||it->day_of_week[0]==-2))
                             {
-                                cout<<year<<month<<day<<hours<<min<<' '<<it->command<<endl;
+                                cout<<year;
+								if(month<10)
+									cout<<0;
+								cout<<month;
+								if(day<10)
+									cout<<0;
+								cout<<day;
+								if(hours<10)
+									cout<<0;
+								cout<<hours;
+								if(min<10)
+									cout<<0;
+								cout<<min;
+								cout<<' '<<it->command<<endl;
                             }
+                            
                         }
+                     	//到了结束时间 
+                        if(year==end_time.year&&month==end_time.month&&
+						day==end_time.day_of_month&&hours==end_time.hours&&min==end_time.minutes)
+						{
+							end_flag=1;
+							break; 
+						}
                     }
+                    start_time.minutes=0;
+                    if(end_flag)
+                    	break;
                 }
+                startweek++;
+                startweek%=7;
+                start_time.hours=0;
+                if(end_flag)
+                	break;
             }
+            start_time.day_of_month=1;
+            if(end_flag)
+            	break;
         }
+        start_time.month=1;
+	    if(end_flag)
+	    	break;
     }
-
     return 0;
 }
