@@ -1,0 +1,3 @@
+D:\IDEA\apps\CLion\ch-0\172.3968.17\bin\cmake\bin\cmake.exe -E remove -f CMakeFiles\Job_oj02.dir/objects.a
+D:\DEVC__~1\C__PRO~1\MinGW64\bin\ar.exe cr CMakeFiles\Job_oj02.dir/objects.a @CMakeFiles\Job_oj02.dir\objects1.rsp
+D:\DEVC__~1\C__PRO~1\MinGW64\bin\G__~1.EXE -g   -Wl,--whole-archive CMakeFiles\Job_oj02.dir/objects.a -Wl,--no-whole-archive  -o Job_oj02.exe -Wl,--out-implib,libJob_oj02.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Job_oj02.dir\linklibs.rsp
