@@ -1,0 +1,3 @@
+D:\IDEA\apps\CLion\ch-0\173.4548.31\bin\cmake\bin\cmake.exe -E remove -f CMakeFiles\prioriy_queue.dir/objects.a
+D:\DEVC__~1\C__PRO~1\MinGW64\bin\ar.exe cr CMakeFiles\prioriy_queue.dir/objects.a @CMakeFiles\prioriy_queue.dir\objects1.rsp
+D:\DEVC__~1\C__PRO~1\MinGW64\bin\G__~1.EXE -g   -Wl,--whole-archive CMakeFiles\prioriy_queue.dir/objects.a -Wl,--no-whole-archive  -o prioriy_queue.exe -Wl,--out-implib,libprioriy_queue.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\prioriy_queue.dir\linklibs.rsp
