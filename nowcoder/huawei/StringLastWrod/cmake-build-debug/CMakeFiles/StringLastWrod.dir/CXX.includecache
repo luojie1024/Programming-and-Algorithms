@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/luojie/CLionProjects/Programming and Algorithms/nowcoder/huawei/StringLastWrod/main.cpp
+iostream
+-
+string
+-
+cmath
+-
+
